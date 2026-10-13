@@ -152,6 +152,34 @@ def main(page: ft.Page) -> None:
                     status.value = "Expressao invalida."
 
             else:
+                if value == ".":
+                    normalized = (
+                        expression
+                        .replace("×", "*")
+                        .replace("÷", "/")
+                        .replace("^", "**")
+                    )
+
+                    # Identifica o número atual após o último operador.
+                    last_number = ""
+                    for char in reversed(normalized):
+                        if char in "+-*/%":
+                            if char == "-" and (
+                                not last_number
+                                or last_number[-1] in "eE"
+                            ):
+                                last_number += char
+                                continue
+                            break
+                        last_number += char
+
+                    if "." in last_number:
+                        status.value = (
+                            "Este numero ja possui ponto decimal."
+                        )
+                        refresh()
+                        return
+
                 expression += value
 
             refresh()
